@@ -92,41 +92,50 @@ zephyr-skills/
 
 ## 四、安装与使用
 
-### 1. 克隆仓库
+### 1. 方式一：发送提示词让 Agent 自动安装（推荐）
 
-```bash
-git clone git@github.com:zephyrw/zephyr-skills.git ~/zephyr-skills
-```
+直接复制以下任一提示词发给 Claude Code、OpenAI Codex、Google Antigravity、Cursor 或 OpenCode，让 Agent 自动完成**“克隆临时仓库 → 按需复制指定 Skill → 删除克隆的临时仓库”**：
 
-### 2. 按客户端软链接安装（推荐，便于 `git pull` 同步更新）
+- **通用模板（按需只安装 1 个或多个指定 Skill）**：
+  ```text
+  请帮我从 https://github.com/zephyrw/zephyr-skills.git 安装指定的 Skill：
+  1. 先将仓库克隆到临时目录 /tmp/zephyr-skills；
+  2. 只将其中我需要的 [填写技能名，例如：plan-fiction，或 human-readable-plans 和 concise-complete-writing] 复制到我当前客户端的全局技能目录（如 ~/.agents/skills、~/.claude/skills、~/.codex/skills 或 ~/.gemini/config/skills），不要安装其他未指定的 Skill；
+  3. 复制完成后，删除克隆的临时目录 /tmp/zephyr-skills，并告诉我最终安装好的路径。
+  ```
 
-根据你使用的 AI 客户端，将技能软链接到对应的全局技能目录：
+- **开箱即用提示词示例（可直接复制发送）**：
+  - **只安装小说构思（`plan-fiction`）**：
+    ```text
+    请帮我把 https://github.com/zephyrw/zephyr-skills.git 克隆到临时目录 /tmp/zephyr-skills，只把里面的 plan-fiction 复制到当前客户端的全局技能目录，复制完成后删除 /tmp/zephyr-skills 临时目录。
+    ```
+  - **只安装写方案 + 简练表达（`human-readable-plans` + `concise-complete-writing`）**：
+    ```text
+    请帮我把 https://github.com/zephyrw/zephyr-skills.git 克隆到临时目录 /tmp/zephyr-skills，只把里面的 human-readable-plans 和 concise-complete-writing 复制到当前客户端的全局技能目录，复制完成后删除 /tmp/zephyr-skills 临时目录。
+    ```
+  - **安装全部 3 个 Skill**：
+    ```text
+    请帮我把 https://github.com/zephyrw/zephyr-skills.git 克隆到临时目录 /tmp/zephyr-skills，把里面的 plan-fiction、human-readable-plans、concise-complete-writing 全部复制到当前客户端的全局技能目录，复制完成后删除 /tmp/zephyr-skills 临时目录。
+    ```
 
-```bash
-# 通用 Agent Skills 目录（Claude Code / Antigravity 等共享推荐）
-mkdir -p ~/.agents/skills
-for skill in concise-complete-writing human-readable-plans plan-fiction; do
-  ln -sfn ~/zephyr-skills/$skill ~/.agents/skills/$skill
-done
+### 2. 方式二：命令行手动安装（克隆 → 复制 → 删除临时目录）
 
-# Claude Code
-mkdir -p ~/.claude/skills
-for skill in concise-complete-writing human-readable-plans plan-fiction; do
-  ln -sfn ~/zephyr-skills/$skill ~/.claude/skills/$skill
-done
+- **只安装单个或指定几个 Skill**（以 `plan-fiction` 为例，如需同时安装多个可在 `cp -R` 后追加目录名）：
+  ```bash
+  git clone --depth 1 https://github.com/zephyrw/zephyr-skills.git /tmp/zephyr-skills && \
+  mkdir -p ~/.agents/skills && \
+  cp -R /tmp/zephyr-skills/plan-fiction ~/.agents/skills/ && \
+  rm -rf /tmp/zephyr-skills
+  ```
+  *(注：根据你使用的客户端，可将目标路径 `~/.agents/skills/` 替换为 `~/.claude/skills/`、`~/.codex/skills/` 或 `~/.gemini/config/skills/`。)*
 
-# OpenAI Codex
-mkdir -p ~/.codex/skills
-for skill in concise-complete-writing human-readable-plans plan-fiction; do
-  ln -sfn ~/zephyr-skills/$skill ~/.codex/skills/$skill
-done
-
-# Google Antigravity / Gemini CLI
-mkdir -p ~/.gemini/config/skills
-for skill in concise-complete-writing human-readable-plans plan-fiction; do
-  ln -sfn ~/zephyr-skills/$skill ~/.gemini/config/skills/$skill
-done
-```
+- **一次性安装全部 3 个 Skill**：
+  ```bash
+  git clone --depth 1 https://github.com/zephyrw/zephyr-skills.git /tmp/zephyr-skills && \
+  mkdir -p ~/.agents/skills && \
+  cp -R /tmp/zephyr-skills/concise-complete-writing /tmp/zephyr-skills/human-readable-plans /tmp/zephyr-skills/plan-fiction ~/.agents/skills/ && \
+  rm -rf /tmp/zephyr-skills
+  ```
 
 ### 3. 组合使用建议
 
